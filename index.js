@@ -20,6 +20,7 @@ async function run() {
   try {
     await client.connect();
     const productCollection = client.db("green-bikester").collection("products");
+    const purchaseCollection = client.db("green-bikester").collection("purchase");
 
     app.get('/service', async (req, res) => {
       const query = {};
@@ -27,6 +28,7 @@ async function run() {
       const services = await cursor.toArray();
       res.send(services);
     })
+
     app.get('/purchase/:id', async (req, res) => {
       const id = req.params.id;
       console.log(id);
@@ -36,18 +38,21 @@ async function run() {
       res.send(cursor);
     })
     
+    app.post("/purchase", async (req, res) => {
+      const purchase = req.body;
+      const result = await purchaseCollection.insertOne(purchase);
+      res.send(result);
+      console.log(result);
+    })
+
+
+
     
   } finally {
     // client.close();
   }
 }
 run().catch(console.dir);
-
-
-
-
-
-
 
 
 
